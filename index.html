@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#fff5fa" />
+    <meta name="description" content="House Music: reproductor de música con playlists basadas en listas doblemente enlazadas." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Unbounded:wght@600;800&display=swap" rel="stylesheet" />
+    <title>House Music · Reproductor</title>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <img src="/favicon.svg" alt="" width="40" height="40" />
+          <div>
+            <strong>House<em>Music</em></strong>
+            <span>Feel the beat · 124 BPM</span>
+          </div>
+        </div>
+
+        <div class="sidebar-heading">
+          <span>Mis playlists</span>
+          <button id="new-playlist" class="icon-btn soft" type="button" title="Nueva playlist" aria-label="Nueva playlist"></button>
+        </div>
+        <ul id="playlist-list" class="playlist-list"></ul>
+
+        <div class="shortcuts">
+          <div class="shortcuts-title"><span data-icon="keyboard"></span>Atajos</div>
+          <dl>
+            <dt><kbd>Espacio</kbd></dt><dd>Reproducir / pausar</dd>
+            <dt><kbd>Shift</kbd> + <kbd>→</kbd></dt><dd>Siguiente canción</dd>
+            <dt><kbd>Shift</kbd> + <kbd>←</kbd></dt><dd>Canción anterior</dd>
+            <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Mover 5 segundos</dd>
+            <dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Volumen</dd>
+            <dt><kbd>M</kbd> <kbd>S</kbd> <kbd>R</kbd></dt><dd>Silenciar, aleatorio, repetir</dd>
+          </dl>
+        </div>
+        <p id="storage-status" class="storage-status"></p>
+      </aside>
+
+      <main class="content">
+        <section id="welcome" class="welcome" hidden>
+          <div class="welcome-logo">
+            <span class="welcome-disc"></span>
+            <img src="/favicon.svg" alt="" width="96" height="96" />
+          </div>
+          <span class="eyebrow">Bienvenido a</span>
+          <h1>House Music</h1>
+          <p>Crea tu primera playlist y llénala con canciones de tu computador o de YouTube.</p>
+          <button id="welcome-create" class="btn primary large" type="button">Crear mi primera playlist</button>
+        </section>
+
+        <section id="playlist-view" class="playlist-view" hidden>
+          <header class="playlist-header">
+            <div class="cover-stack">
+              <div class="cover-disc"><span id="cover-disc-label"></span></div>
+              <div id="playlist-cover" class="playlist-cover"></div>
+            </div>
+            <div class="playlist-info">
+              <span class="eyebrow">Playlist</span>
+              <h1 id="playlist-title"></h1>
+              <p id="playlist-meta" class="playlist-meta"></p>
+              <div class="playlist-actions">
+                <button id="play-all" class="btn primary" type="button"></button>
+                <button id="shuffle-all" class="btn" type="button"></button>
+                <span class="divider"></span>
+                <button id="add-first" class="btn" type="button"></button>
+                <button id="add-last" class="btn" type="button"></button>
+                <button id="open-youtube" class="btn accent" type="button"></button>
+                <span class="spacer"></span>
+                <button id="rename-playlist" class="icon-btn" type="button" title="Renombrar playlist" aria-label="Renombrar playlist"></button>
+                <button id="delete-playlist" class="icon-btn danger" type="button" title="Eliminar playlist" aria-label="Eliminar playlist"></button>
+              </div>
+            </div>
+          </header>
+
+          <div class="toolbar">
+            <label class="search">
+              <span data-icon="search"></span>
+              <input id="search" type="search" placeholder="Buscar en esta playlist" autocomplete="off" />
+            </label>
+            <p id="list-hint" class="list-hint"></p>
+          </div>
+
+          <div id="song-scroller" class="song-scroller">
+            <ol id="song-list" class="song-list"></ol>
+            <div id="empty-playlist" class="empty-playlist" hidden>
+              <span data-icon="upload"></span>
+              <h2>Esta playlist está vacía</h2>
+              <p>Arrastra aquí canciones desde tu computador, elígelas con el botón o búscalas en YouTube.</p>
+              <div class="empty-actions">
+                <button id="empty-add" class="btn primary" type="button">Elegir canciones</button>
+                <button id="empty-youtube" class="btn" type="button">Buscar en YouTube</button>
+              </div>
+            </div>
+            <p id="no-results" class="no-results" hidden>No hay canciones que coincidan con tu búsqueda.</p>
+          </div>
+        </section>
+
+        <aside id="youtube-panel" class="youtube-panel" aria-hidden="true"></aside>
+
+        <div class="drop-overlay" aria-hidden="true">
+          <div>
+            <span data-icon="upload"></span>
+            <strong>Suelta tus canciones</strong>
+            <small>Suéltalas sobre la lista para elegir la posición exacta</small>
+          </div>
+        </div>
+      </main>
+
+      <div id="video-dock" class="video-dock" aria-label="Video de YouTube">
+        <div id="video-host" class="video-host"></div>
+      </div>
+
+      <footer class="player" id="player">
+        <div class="now-playing">
+          <div class="now-vinyl">
+            <div id="now-cover" class="now-cover"></div>
+          </div>
+          <div class="now-text">
+            <strong id="now-title">Nada sonando</strong>
+            <span id="now-artist">Elige una canción para empezar</span>
+            <small id="up-next" class="up-next"></small>
+          </div>
+        </div>
+
+        <div class="transport">
+          <div class="controls">
+            <button id="btn-shuffle" class="icon-btn toggle" type="button" title="Aleatorio (S)" aria-label="Aleatorio"></button>
+            <button id="btn-previous" class="icon-btn large" type="button" title="Canción anterior (Shift + ←)" aria-label="Canción anterior"></button>
+            <button id="btn-play" class="play-btn" type="button" title="Reproducir (Espacio)" aria-label="Reproducir"></button>
+            <button id="btn-next" class="icon-btn large" type="button" title="Siguiente canción (Shift + →)" aria-label="Siguiente canción"></button>
+            <button id="btn-repeat" class="icon-btn toggle" type="button" title="Repetir (R)" aria-label="Repetir"></button>
+          </div>
+          <div class="progress">
+            <span id="time-current">0:00</span>
+            <input id="seek" class="range" type="range" min="0" max="1000" value="0" step="1" aria-label="Progreso de la canción" disabled />
+            <span id="time-total">0:00</span>
+          </div>
+        </div>
+
+        <div class="extras">
+          <canvas id="visualizer" class="visualizer" aria-hidden="true"></canvas>
+          <div class="volume">
+            <button id="btn-mute" class="icon-btn" type="button" title="Silenciar (M)" aria-label="Silenciar"></button>
+            <input id="volume" class="range" type="range" min="0" max="100" value="80" step="1" aria-label="Volumen" />
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <input id="file-input" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac,.opus" multiple hidden />
+    <div id="dialog-root"></div>
+    <div id="toast-root" class="toast-root"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
